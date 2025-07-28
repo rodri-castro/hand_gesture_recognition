@@ -1,4 +1,4 @@
-#!/usr/bin/python3.9
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import rospy
@@ -12,7 +12,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from hand_gesture_recognition.msg import KeyPoint2D
 from hand_gesture_recognition.msg import KeyPoint2DArray
 
-from sobits_msgs.srv import RunCtrl, RunCtrlResponse
+# from sobits_msgs.srv import RunCtrl, RunCtrlResponse
 
 
 class HandSignRecognition:
@@ -38,7 +38,7 @@ class HandSignRecognition:
         self.pub_result_img   = rospy.Publisher(self.pub_img_topic_name, Image, queue_size=10)
         self.pub_gesture      = rospy.Publisher(self.pub_ges_topic_name, String, queue_size=10)
         self.pub_result_array = rospy.Publisher(self.pub_hand_lm_topic_name, KeyPoint2DArray, queue_size=10)
-        self.server           = rospy.Service("~run_ctr", RunCtrl, self.run_ctrl_server)
+        # self.server           = rospy.Service("~run_ctr", RunCtrl, self.run_ctrl_server)
 
         # Create a gesture recognition object that loads labels and train model
         self.gesture_detector = GestureRecognition(self.keypoint_classifier_label,
@@ -47,10 +47,10 @@ class HandSignRecognition:
         self.bridge = CvBridge()
         self.cv_fps_calc = CvFpsCalc(buffer_len=10)
 
-    # RunCtrl Server
-    def run_ctrl_server(self, msg):
-        self.pose_2d_detect = True if msg.request else False
-        return RunCtrlResponse(True)
+    # # RunCtrl Server
+    # def run_ctrl_server(self, msg):
+    #     self.pose_2d_detect = True if msg.request else False
+    #     return RunCtrlResponse(True)
 
     def img_cb(self, image_msg):
         """A callback function for the image subscriber

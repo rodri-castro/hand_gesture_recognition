@@ -7,7 +7,8 @@ project(hand_gesture_recognition)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(OpenCV 4.9.0 REQUIRED PATHS "/opt/opencv/opencv_4.9.0/")
+# find_package(OpenCV 4.9.0 REQUIRED PATHS "/opt/opencv/opencv_4.9.0/")
+find_package(OpenCV 4 REQUIRED) # rco
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
@@ -15,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   geometry_msgs
   message_generation
-  sobits_msgs
+  # sobits_msgs # rco
 )
 
 ## System dependencies are found with CMake's conventions
@@ -56,6 +57,8 @@ add_message_files(
   FILES
   KeyPoint2D.msg
   KeyPoint2DArray.msg
+  KeyPoint3D.msg
+  KeyPoint3DArray.msg
 )
 
 # Generate added messages and services with any dependencies listed here

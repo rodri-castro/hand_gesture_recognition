@@ -7,7 +7,7 @@
     <arg name="pose_2d_img_show"          default="true"/>
     <arg name="pose_2d_img_pub"           default="true"/>
 
-    <arg name="sub_img_topic_name"        default="/camera/rgb/image_raw"/>
+    <arg name="sub_img_topic_name"        default="/usb_cam/image_raw"/>
 
     <node name="hand_gesture_recognition" pkg="hand_gesture_recognition" type="hand_sign_recognition.py" output="screen">
         <param name="keypoint_classifier_label" type="string" value="$(arg keypoint_classifier_label)" />
