@@ -52,10 +52,33 @@ class TriangulationNode:
         rospy.init_node('triangulate_kp_node')
         rospy.loginfo("Nodo de triangulación iniciado.")
 
-        self.pub = rospy.Publisher("/triangulated_hand_kp_array", KeyPoint3DArray, queue_size=10)
+        # Obtener los topics de los parámetros del launch file
+        cartesian_detection_topic_cam3 = rospy.get_param("~cartesian_pub_topic_camera_3")
+        cartesian_detection_topic_cam4 = rospy.get_param("~cartesian_pub_topic_camera_4")
+
+        self.pub = rospy.Publisher("/hand_pose_3d", KeyPoint3DArray, queue_size=10)
 
         # Puntos a triangular
-        self.keypoints = rospy.get_param("~keypoints", ["wrist", "index_finger_mcp", "pinky_mcp"])
+        if rospy.has_param("~kp_to_triangulate"):
+            kp_to_triangulate = rospy.get_param("~kp_to_triangulate")
+            if kp_to_triangulate == "reduced":
+                self.keypoints = ["wrist", "index_finger_mcp", "pinky_mcp"]
+            elif kp_to_triangulate == "all":
+                self.keypoints = [
+                    "wrist", "thumb_cmc", "thumb_mcp", "thumb_ip", "thumb_tip",
+                    "index_finger_mcp", "index_finger_pip", "index_finger_dip", "index_finger_tip",
+                    "middle_finger_mcp", "middle_finger_pip", "middle_finger_dip", "middle_finger_tip",
+                    "ring_finger_mcp", "ring_finger_pip", "ring_finger_dip", "ring_finger_tip",
+                    "pinky_mcp", "pinky_pip", "pinky_dip", "pinky_tip"
+                ]
+            else:
+                rospy.logwarn(f"Valor desconocido para kp_to_triangulate: {kp_to_triangulate}. Usando puntos reducidos.")
+                self.keypoints = ["wrist", "index_finger_mcp", "pinky_mcp"]
+        else:
+            rospy.logwarn("No se encontró el parámetro kp_to_triangulate, usando puntos reducidos por defecto.")
+            self.keypoints = ["wrist", "index_finger_mcp", "pinky_mcp"]
+
+    
         rospy.loginfo(f"Puntos clave a triangular: {self.keypoints}")
 
         # Load calibration matrices
@@ -80,8 +103,8 @@ class TriangulationNode:
                 rospy.loginfo("Matrices de calibración cargadas correctamente.")
 
 
-        sub3 = Subscriber("/camera3/hand_cartesian_detections", KeyPoint2DArray)
-        sub4 = Subscriber("/camera4/hand_cartesian_detections", KeyPoint2DArray)
+        sub3 = Subscriber(cartesian_detection_topic_cam3, KeyPoint2DArray)
+        sub4 = Subscriber(cartesian_detection_topic_cam4, KeyPoint2DArray)
 
         ats = ApproximateTimeSynchronizer([sub3, sub4], queue_size=10, slop=0.1)
         ats.registerCallback(self.sync_callback)
@@ -173,7 +196,7 @@ class TriangulationNode:
         # Publicar como nube de puntos para RVIZ
         pointcloud_pub = getattr(self, 'pointcloud_pub', None)
         if pointcloud_pub is None:
-            self.pointcloud_pub = rospy.Publisher("/triangulated_hand_pointcloud", PointCloud, queue_size=10)
+            self.pointcloud_pub = rospy.Publisher("/hand_pose_3d_pointcloud", PointCloud, queue_size=10)
             pointcloud_pub = self.pointcloud_pub
 
         pointcloud_msg = PointCloud()
