@@ -67,7 +67,7 @@ class HandSignRecognition:
         if self.camera_model is None:
             self.camera_model = image_geometry.PinholeCameraModel()
             self.camera_model.fromCameraInfo(camera_info_msg)
-            rospy.loginfo("Camera model initialized for pixel to meter conversion.")
+            rospy.logdebug("Camera model initialized for pixel to meter conversion.")
 
     def pixel_to_cartesian(self, u, v, image_width=None):
         # Invierte la coordenada x (u) antes de calcular la dirección cartesiana
@@ -185,7 +185,7 @@ class HandSignRecognition:
 
 if __name__=="__main__":
     # Initialize the node
-    rospy.init_node('hand_sign_recognition_demo', anonymous=True)
+    rospy.init_node('Iniciando nodo de hand_pose_2d', anonymous=True)
 
     try:
         hand_sign = HandSignRecognition()

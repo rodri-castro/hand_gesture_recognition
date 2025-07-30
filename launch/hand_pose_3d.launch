@@ -20,7 +20,7 @@
     
     <arg name="pose_2d_detect"                default="true"/>
     <arg name="pose_2d_log_show"              default="false"/>
-    <arg name="pose_2d_img_show"              default="true"/>
+    <arg name="pose_2d_img_show"              default="false"/>
     <arg name="pose_2d_img_pub"               default="true"/>
 
     <!-- Input topics for each camera -->
@@ -91,7 +91,6 @@
         <param name="cartesian_pub_topic_camera_3" value="$(arg cartesian_pub_topic_camera_3)"/>
         <param name="cartesian_pub_topic_camera_4" value="$(arg cartesian_pub_topic_camera_4)"/>
         <param name="kp_to_triangulate" value="$(arg kp_to_triangulate)"/>
-        <!-- <param name="keypoints" value="$(arg keypoints)"/> -->
     </node>
 
 </launch>
